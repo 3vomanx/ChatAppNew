@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR | E_PARSE);
     session_start();
     include "../../includes/mysql.php";
     $db = new Connection();
@@ -22,7 +23,7 @@
                                         FROM    users
                                         WHERE   users.gender_id = $partner_gender 
                                         AND partner_gender_id = $my_gender 
-                                        AND status_id = 2 LIMIT 1");
+                                         LIMIT 1");
             if($partner == NULL || $partner == ""){
                 $user = $_SESSION['user_id'];
                 $if_user = $db->GetData("SELECT partner_id FROM chat WHERE user_id = $user")['partner_id'];
@@ -87,9 +88,11 @@
             $user       = $_SESSION['user_id'];
             $partner_id = $_REQUEST["partner"];
             $user_msg   = $_REQUEST["user_msg"];
+            
 
 
-            $my_place = $db->GedData("SELECT user_id FROM chat WHERE user_id = $user")['user_id'];
+            $my_place = $db->GetData("SELECT user_id FROM chat WHERE user_id = $user")['user_id'];
+            echo $my_place;
 
             if($my_place > 0){
                 $chat_id = $db->GetData("SELECT id FROM chat WHERE user_id  = $user")['id'];
@@ -101,8 +104,9 @@
             }
             else{
                 $chat_id = $db->GetData("SELECT id FROM chat WHERE partner_id  = $user")['id'];
+                
                 $db->SetQuery(" INSERT INTO chat_detail (chat_id, user_id, partner_id, partner_msg)
-                                VALUES ($chat_id, $user, $partner_id, '$user_msg')");
+                                VALUES ($chat_id, $partner_id, $user, '$user_msg')");
 
                 $last_msg_id = $db->GetData("SELECT id FROM chat_detail WHERE user_id = $user ORDER BY id DESC")['id'];
                 $_SESSION['last_msg_id'] = $last_msg_id;

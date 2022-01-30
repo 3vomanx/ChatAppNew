@@ -1,18 +1,18 @@
-var MainPage = "testing";
+var MainPage = "welcome";
 var RouterURL = "router.php";
 
 window.onload = () => {
-    Router(MainPage);   
+    Router(MainPage);
 }
 
 Router = (Page) => {
     $.ajax({
         url: RouterURL,
         data: {
-            method  : "GetPage",
-            page    : Page,
+            method: "GetPage",
+            page: Page,
         },
-        success: function (response) {
+        success: function(response) {
             var result = JSON.parse(response);
             document.title = Page;
             $("#content").html(result.page);
